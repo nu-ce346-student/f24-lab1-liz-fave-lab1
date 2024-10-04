@@ -44,11 +44,19 @@ int main(void) {
   //    where the register name in all caps goes after the arrow.
   //    For example, NRF_GPIOTE->CONFIG[0]
   // Add code here
+  int config = (2 << 16) + (14 << 8) + (1 << 0);
+  NRF_GPIOTE->CONFIG[0] = config;
+
+  int config2 = (1 << 0);
+  NRF_GPIOTE->INTENSET = config2;
 
 
   // Second task. Trigger a software interrupt
   // Use the software_interupt_* functions defined above
   // Add code here
+  void NVIC_EnableIRQ(uint8_t GPIOTE_IRQn);
+  void NVIC_DisableIRQ(uint8_t SWI1_EGU1_IRQn);
+  void NVIC_SetPriority(uint8_t GPIOTE_IRQn, uint8_t 1);
 
 
   // loop forever
