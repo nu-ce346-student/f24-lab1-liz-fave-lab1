@@ -24,9 +24,21 @@ void software_interrupt_trigger(void) {
 
 void SWI1_EGU1_IRQHandler(void) {
   // Clear interrupt event
-  NRF_EGU1->EVENTS_TRIGGERED[0] = 0;
+ if ( NRF_EGU1->EVENTS_TRIGGERED[0] ) {
+	NRF_EGU1->EVENTS_TRIGGERED[0] = 0;}
 
   // Implement me
+  //
+
+	for (int i = 0; i < 10; i++) {
+		
+		printf("Software Interrupt: Iteration %d\n", i);
+		nrf_delay_ms(500);
+
+	
+	}
+
+  printf("Software Interrupt Triggered\n");
 }
 
 void GPIOTE_IRQHandler(void) {
@@ -34,6 +46,8 @@ void GPIOTE_IRQHandler(void) {
   NRF_GPIOTE->EVENTS_IN[0] = 0;
 
   // Implement me
+
+  printf("GPIOTE Interrupt Triggered\n");
 }
 
 int main(void) {
@@ -44,12 +58,28 @@ int main(void) {
   //    where the register name in all caps goes after the arrow.
   //    For example, NRF_GPIOTE->CONFIG[0]
   // Add code here
+  //
+   
 
-
-  // Second task. Trigger a software interrupt
+		   NRF_GPIOTE->CONFIG[0] = (GPIOTE_CONFIG_MODE_Event << GPIOTE_CONFIG_MODE_Pos) |                          (14 << GPIOTE_CONFIG_PSEL_Pos) |  (GPIOTE_CONFIG_POLARITY_HiToLo << GPIOTE_CONFIG_POLARITY_Pos); 
+ 
+		  NRF_GPIOTE->INTENSET = GPIOTE_INTENSET_IN0_Msk; // Enable interrupt for IN[0]
+		// Enable GPIOTE interrupt in NVIC with priority 1 (lower number = higher priority)
+  NVIC_SetPriority(GPIOTE_IRQn, 1);
+  NVIC_EnableIRQ(GPIOTE_IRQn);		
+		  
+		   // Second task. Trigger a software interrupt
   // Use the software_interupt_* functions defined above
   // Add code here
+   
+  			software_interrupt_init(); // Initialize software interrupts
 
+  // Example of triggering the software interrupt after a delay
+	nrf_delay_ms(5000); // Delay before triggering 
+  //
+
+			NVIC_SetPriority(SWI1_EGU1_IRQn, 2);
+  software_interrupt_trigger(); // Trigger software interrupt
 
   // loop forever
   while (1) {
@@ -57,4 +87,4 @@ int main(void) {
     nrf_delay_ms(1000);
   }
 }
-
+    
