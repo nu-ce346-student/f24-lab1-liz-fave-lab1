@@ -58,8 +58,8 @@ int main(void) {
   //    where the register name in all caps goes after the arrow.
   //    For example, NRF_GPIOTE->CONFIG[0]
   // Add code here
-  //
-   
+
+  
 
 		   NRF_GPIOTE->CONFIG[0] = (GPIOTE_CONFIG_MODE_Event << GPIOTE_CONFIG_MODE_Pos) |                          (14 << GPIOTE_CONFIG_PSEL_Pos) |  (GPIOTE_CONFIG_POLARITY_HiToLo << GPIOTE_CONFIG_POLARITY_Pos); 
  
@@ -73,6 +73,11 @@ int main(void) {
   // Add code here
    
   			software_interrupt_init(); // Initialize software interrupts
+
+  void NVIC_EnableIRQ(uint8_t GPIOTE_IRQn);
+  void NVIC_DisableIRQ(uint8_t SWI1_EGU1_IRQn);
+  void NVIC_SetPriority(uint8_t GPIOTE_IRQn, uint8_t 1);
+
 
   // Example of triggering the software interrupt after a delay
 	nrf_delay_ms(5000); // Delay before triggering 
